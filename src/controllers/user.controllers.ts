@@ -6,6 +6,7 @@ import { HTTP_STATUS } from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { ErrorWithStatus } from '~/models/errors'
 import { RegisterRequestBody, TokenPayLoad } from '~/models/requests/User.request'
+import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import refreshTokenService from '~/services/refreshToken.services'
 import userService from '~/services/user.services'
@@ -55,8 +56,8 @@ export const userResendEmailVerifyController = async (req: Request, res: Respons
 }
 
 export const userForgotPasswordController = async (req: Request, res: Response) => {
-  const { _id } = (req as any).user
-  const result = await userService.forgotPassword(_id.toString())
+  const { _id, verify } = req.user as User
+  const result = await userService.forgotPassword((_id as ObjectId).toString(), verify)
   res.json(result)
 }
 
