@@ -1,6 +1,6 @@
 import databaseService from '~/services/database.services'
 import User from '~/models/schemas/User.schema'
-import { RegisterRequestBody } from '~/models/requests/User.request'
+import { RegisterRequestBody, UpdateMeRequestBody } from '~/models/requests/User.request'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TypeToken, UserVerifyStatus } from '~/constants/enums'
@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb'
 import { ErrorWithStatus } from '~/models/errors'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { HTTP_STATUS } from '~/constants/httpStatus'
+import Follower from '~/models/schemas/Follower.schema'
 
 class UserService {
   /**
@@ -166,6 +167,38 @@ class UserService {
         }
       }
     )
+  }
+  async updateMeService(user_id: string, payload: UpdateMeRequestBody) {
+    const _payload = payload.date_of_birth ? { ...payload, date_of_birth: new Date(payload.date_of_birth) } : payload
+    return await databaseService.getUsers.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          ...(_payload as UpdateMeRequestBody & { date_of_birth: Date })
+        },
+        $currentDate: {
+          update_at: true
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+  }
+  async followService(user_id: string, follow_user_id: string) {
+    const follower = await databaseService.getFollowers.findOne({
+      user_id: new ObjectId(user_id),
+      follow_user_id: new ObjectId(follow_user_id)
+    })
+    console.log(follower)
+
+    if (follower === null) {
+      const result = await databaseService.getFollowers.insertOne(
+        new Follower({ user_id: new ObjectId(user_id), follow_user_id: new ObjectId(follow_user_id) })
+      )
+      return result
+    }
+    return { success: false, meg: 'Follower is Exist' }
   }
 }
 

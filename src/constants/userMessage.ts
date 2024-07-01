@@ -18,5 +18,13 @@ export const USER_MESSAGE = {
   NOT_FOUND: 'Not found',
   VERIFID_EMAIL_TOKEN: 'email is already verified',
   ERROR_NOT_EXISTS_EMAIL: 'email is not exists',
-  ERROR_INVALID_USER: 'Invalid user'
+  ERROR_INVALID_USER: 'Invalid user',
+  ERROR_BIO_IS_STRING: 'Bio must be a string',
+  ERROR_LOCATION_IS_STRING: 'Location must be a string',
+  ERROR_WEBSITE_IS_STRING: 'Website must be a string',
+  ERROR_USERNAME_IS_STRING: 'Username must be a string',
+  ERROR_AVATAR_IS_STRING: 'Avatar must be a string',
+  ERROR_COVER_PHOTO_IS_STRING: 'Cover photo must be a string',
+  USER_FOLLOW_USER_ID_INVALID: 'Follower user id invalid',
+  ERROR_EMPTY_FOLLOW_USER_ID: 'Follower user id is empty'
 } as const

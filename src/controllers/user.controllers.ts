@@ -5,15 +5,20 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { ErrorWithStatus } from '~/models/errors'
-import { RegisterRequestBody, TokenPayLoad } from '~/models/requests/User.request'
+import {
+  FollowRequestBody,
+  RegisterRequestBody,
+  TokenPayLoad,
+  UpdateMeRequestBody
+} from '~/models/requests/User.request'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import refreshTokenService from '~/services/refreshToken.services'
 import userService from '~/services/user.services'
 
 export const userLoginController = async (req: Request, res: Response) => {
-  const { user_id }: any = req
-  const result = await userService.login(user_id.toString())
+  const user = req.user as User
+  const result = await userService.login({ user_id: (user._id as ObjectId).toString(), verify: user.verify })
   await refreshTokenService.addRefreshTokenService(result.refreshToken as string)
   res.status(200).json({ ...result, message: USER_MESSAGE.LOGIN_SUCCESS })
 }
@@ -75,4 +80,30 @@ export const resetPasswordController = async (req: Request, res: Response) => {
 export const getUserByTokenController = async (req: Request, res: Response) => {
   const { user_id } = req.decode_access_token as TokenPayLoad
   const result = await userService.getUserByID(user_id)
+  res.status(200).json({ meg: 'Data user', result })
+}
+
+export const updateMeController = async (
+  req: Request<core.ParamsDictionary, any, UpdateMeRequestBody>,
+  res: Response
+) => {
+  const { body } = req
+  const { user_id } = req.decode_access_token as TokenPayLoad
+
+  const result = await userService.updateMeService(user_id, body)
+  res.json({
+    mes: 'updated successfully',
+    result
+  })
+}
+
+export const followController = async (req: Request<core.ParamsDictionary, any, FollowRequestBody>, res: Response) => {
+  const { follow_user_id } = req.body
+  const { user_id } = req.decode_access_token as TokenPayLoad
+
+  const result = await userService.followService(user_id, follow_user_id)
+  res.json({
+    mes: 'Follow successfully',
+    result
+  })
 }

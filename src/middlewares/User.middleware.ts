@@ -10,7 +10,9 @@ import { HTTP_STATUS } from '~/constants/httpStatus'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import databaseService from '~/services/database.services'
 import { ObjectId } from 'mongodb'
-
+import { TokenPayLoad } from '~/models/requests/User.request'
+import { UserVerifyStatus } from '~/constants/enums'
+import { Request, Response, NextFunction } from 'express'
 export const checkValidateRegister = validate(
   checkSchema(
     {
@@ -89,7 +91,7 @@ export const checkValidateLogin = validate(
             })
 
             if (user) {
-              req.user_id = user._id
+              req.user = user
               return true
             } else {
               throw new ErrorWithStatus(USER_MESSAGE.LOGIN_FAILED, 401)
@@ -186,6 +188,7 @@ export const checkValidateAccessToken = validate(
             }
             try {
               const decode_access_token = await verifyToken(accessToken, process.env.PRIVATE_KEY as string)
+
               req.decode_access_token = decode_access_token
               return true
             } catch (error) {
@@ -213,7 +216,6 @@ export const checkValidateForgotPasswordToken = validate(
                 value,
                 process.env.PRIVATE_PASSWORD_TOKEN as string
               )
-              console.log(decode_forgot_password_token)
 
               const { user_id } = decode_forgot_password_token as any
 
@@ -315,6 +317,106 @@ export const checkValidateResetPassword = validate(
               }
               throw error
             }
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const checkValidateVerifiedUser = (req: Request, res: Response, next: NextFunction) => {
+  const decode_access_token = req.decode_access_token as TokenPayLoad
+  const { verify } = decode_access_token
+  if (verify === UserVerifyStatus.Verified) {
+    next()
+  }
+  next()
+}
+
+export const checkValidateUpdateMe = validate(
+  checkSchema(
+    {
+      name: {
+        optional: true,
+        trim: true,
+        isLength: {
+          options: {
+            min: 3,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.ERROR_LENGTH_NAME
+        }
+      },
+      date_of_birth: {
+        optional: true,
+        isISO8601: {
+          errorMessage: USER_MESSAGE.ERROR_ISODATE_DOB
+        }
+      },
+      bio: {
+        optional: true,
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_BIO_IS_STRING
+        }
+      },
+      location: {
+        optional: true,
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_LOCATION_IS_STRING
+        }
+      },
+      website: {
+        optional: true,
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_WEBSITE_IS_STRING
+        }
+      },
+      username: {
+        optional: true,
+
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_USERNAME_IS_STRING
+        }
+      },
+      avatar: {
+        optional: true,
+
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_AVATAR_IS_STRING
+        }
+      },
+      cover_photo: {
+        optional: true,
+
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.ERROR_COVER_PHOTO_IS_STRING
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const checkValidateFollow = validate(
+  checkSchema(
+    {
+      follow_user_id: {
+        isEmpty: false,
+        isString: true,
+        custom: {
+          options: (value: string) => {
+            if (!ObjectId.isValid(value)) {
+              throw new ErrorWithStatus(USER_MESSAGE.USER_FOLLOW_USER_ID_INVALID, HTTP_STATUS.BAD_REQUEST)
+            }
+
+            return true
           }
         }
       }

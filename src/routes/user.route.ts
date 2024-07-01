@@ -1,7 +1,9 @@
 import express from 'express'
 import {
+  followController,
   getUserByTokenController,
   resetPasswordController,
+  updateMeController,
   userEmailVerifyController,
   userForgotPasswordController,
   userLoginController,
@@ -13,13 +15,18 @@ import {
 import {
   checkValidaVerifyToken,
   checkValidateAccessToken,
+  checkValidateFollow,
   checkValidateForgotPassword,
   checkValidateForgotPasswordToken,
   checkValidateLogin,
   checkValidateLogout,
   checkValidateRegister,
-  checkValidateResetPassword
+  checkValidateResetPassword,
+  checkValidateUpdateMe,
+  checkValidateVerifiedUser
 } from '~/middlewares/User.middleware'
+import { filterFieldMidderware } from '~/middlewares/common.middlewares'
+import { UpdateMeRequestBody } from '~/models/requests/User.request'
 import { wrapperRequestHandler } from '~/utils/handleError'
 const userRouter = express.Router()
 userRouter.post('/logout', checkValidateLogout, wrapperRequestHandler(userLogoutController))
@@ -39,4 +46,30 @@ userRouter.post(
 )
 userRouter.post('/reset-password', checkValidateResetPassword, wrapperRequestHandler(resetPasswordController))
 userRouter.get('/me', checkValidateAccessToken, wrapperRequestHandler(getUserByTokenController))
+userRouter.patch(
+  '/me',
+  checkValidateAccessToken,
+  checkValidateVerifiedUser,
+  checkValidateUpdateMe,
+  filterFieldMidderware<UpdateMeRequestBody>([
+    'name',
+    'avatar',
+    'bio',
+    'cover_photo',
+    'date_of_birth',
+    'location',
+    'username',
+    'website'
+  ]),
+  wrapperRequestHandler(updateMeController)
+)
+
+userRouter.post(
+  '/follow',
+  checkValidateAccessToken,
+  checkValidateVerifiedUser,
+  checkValidateFollow,
+  wrapperRequestHandler(followController)
+)
+
 export default userRouter
