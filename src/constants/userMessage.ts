@@ -1,0 +1,22 @@
+export const USER_MESSAGE = {
+  VALIDATE_ERROR: 'Validation error',
+  LOGIN_FAILED: 'Email or password incorrect',
+  LOGIN_SUCCESS: 'Login successful',
+  REGISTER_SUCCESS: 'Registration successful',
+  ERROR_LENGTH_PASSWORD: 'Password should be at least 8 chars and more than 20 chars',
+  ERROR_LENGTH_NAME: 'username must be at least 3 characters and more than 100 characters',
+  ERROR_ISODATE_DOB: 'Date is not a valid ISO',
+  ERROR_NOT_EMAIL: 'Email is not a valid',
+  ERROR_EXISTS_EMAIL: 'Email is already exists',
+  ERROR_PASSWORD_NOT_MATCH: 'password and confirm password do not match',
+  ERROR_EMPTY_TOKEN: 'token is not found',
+  ERROR_INVALID_ACCESS_TOKEN: 'Access token is invalid',
+  ERROR_INVALID_REFRESH_TOKEN: 'Refresh token is invalid',
+  ERROR_INVALID_EMAIL_VERIFY_TOKEN: 'Refresh token is invalid',
+  ERROR_INVALID_FORGOT_PASSWORD_TOKEN: 'Forgot password token is invalid',
+  LOGOUT_SUCCESS: 'User logged out successfully',
+  NOT_FOUND: 'Not found',
+  VERIFID_EMAIL_TOKEN: 'email is already verified',
+  ERROR_NOT_EXISTS_EMAIL: 'email is not exists',
+  ERROR_INVALID_USER: 'Invalid user'
+} as const
