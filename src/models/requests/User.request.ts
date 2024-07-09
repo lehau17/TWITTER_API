@@ -1,4 +1,5 @@
 import { TypeToken, UserVerifyStatus } from '~/constants/enums'
+import { ParamsDictionary } from 'express-serve-static-core'
 
 export interface RegisterRequestBody {
   name: string
@@ -28,4 +29,14 @@ export interface TokenPayLoad {
   verify: UserVerifyStatus
   iat: number
   exp: number
+}
+
+export interface ChangePasswordReqBody {
+  oldPassword: string
+  newPassword: string
+  conformNewPassword: string
+}
+
+export interface UnfollowParamsRequestBody extends ParamsDictionary {
+  follow_user_id: string
 }

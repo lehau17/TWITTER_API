@@ -1,8 +1,11 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import {
+  changePasswordController,
   followController,
   getUserByTokenController,
+  oauthController,
   resetPasswordController,
+  unFollowController,
   updateMeController,
   userEmailVerifyController,
   userForgotPasswordController,
@@ -15,6 +18,7 @@ import {
 import {
   checkValidaVerifyToken,
   checkValidateAccessToken,
+  checkValidateChangePassword,
   checkValidateFollow,
   checkValidateForgotPassword,
   checkValidateForgotPasswordToken,
@@ -22,11 +26,12 @@ import {
   checkValidateLogout,
   checkValidateRegister,
   checkValidateResetPassword,
+  checkValidateUnfollow,
   checkValidateUpdateMe,
   checkValidateVerifiedUser
 } from '~/middlewares/User.middleware'
 import { filterFieldMidderware } from '~/middlewares/common.middlewares'
-import { UpdateMeRequestBody } from '~/models/requests/User.request'
+import { TokenPayLoad, UnfollowParamsRequestBody, UpdateMeRequestBody } from '~/models/requests/User.request'
 import { wrapperRequestHandler } from '~/utils/handleError'
 const userRouter = express.Router()
 userRouter.post('/logout', checkValidateLogout, wrapperRequestHandler(userLogoutController))
@@ -64,12 +69,23 @@ userRouter.patch(
   wrapperRequestHandler(updateMeController)
 )
 
-userRouter.post(
-  '/follow',
+userRouter.post('/follow', checkValidateAccessToken, checkValidateVerifiedUser, checkValidateFollow, followController)
+
+userRouter.delete(
+  '/unfollow/:follow_user_id',
   checkValidateAccessToken,
   checkValidateVerifiedUser,
-  checkValidateFollow,
-  wrapperRequestHandler(followController)
+  checkValidateUnfollow,
+  wrapperRequestHandler(unFollowController)
 )
 
+userRouter.put(
+  'changePassword',
+  checkValidateAccessToken,
+  checkValidateChangePassword,
+  wrapperRequestHandler(changePasswordController)
+)
+
+//ouath 2.0 google
+userRouter.get('/oauth/google', wrapperRequestHandler(oauthController))
 export default userRouter

@@ -9,6 +9,7 @@ import { ErrorWithStatus } from '~/models/errors'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import Follower from '~/models/schemas/Follower.schema'
+import axios from 'axios'
 
 class UserService {
   /**
@@ -199,6 +200,69 @@ class UserService {
       return result
     }
     return { success: false, meg: 'Follower is Exist' }
+  }
+  async unFollowService(user_id: string, follow_user_id: string) {
+    const follower = await databaseService.getFollowers.findOne({
+      user_id: new ObjectId(user_id),
+      follow_user_id: new ObjectId(follow_user_id)
+    })
+
+    if (follower !== null) {
+      const result = await databaseService.getFollowers.deleteOne({
+        user_id: new ObjectId(user_id),
+        follow_user_id: new ObjectId(follow_user_id)
+      })
+      return { deleted: true, meg: 'Unfollow follower' }
+    }
+    return { deleted: false, meg: 'Follower is not found' }
+  }
+  async checkExistUsername(value: string) {
+    const user = await databaseService.getUsers.findOne({ username: value })
+    if (user === null) {
+      return false
+    }
+    return true
+  }
+  private async getOauthGoogleToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    return data
+  }
+
+  async oauthService(code: string) {
+    const data = await this.getOauthGoogleToken(code)
+    return data
+  }
+  async getUserByIdAndPassword(userId: string, password: string) {
+    return databaseService.getUsers.findOne({
+      _id: new ObjectId(userId),
+      password: hashPassword(password)
+    })
+  }
+  async changePasswordService(userId: string, password: string) {
+    return await databaseService.getUsers.updateOne(
+      {
+        _id: new ObjectId(userId)
+      },
+      {
+        $set: {
+          password: hashPassword(password)
+        },
+        $currentDate: {
+          update_at: true
+        }
+      }
+    )
   }
 }
 

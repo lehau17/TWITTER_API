@@ -26,5 +26,9 @@ export const USER_MESSAGE = {
   ERROR_AVATAR_IS_STRING: 'Avatar must be a string',
   ERROR_COVER_PHOTO_IS_STRING: 'Cover photo must be a string',
   USER_FOLLOW_USER_ID_INVALID: 'Follower user id invalid',
-  ERROR_EMPTY_FOLLOW_USER_ID: 'Follower user id is empty'
+  ERROR_EMPTY_FOLLOW_USER_ID: 'Follower user id is empty',
+  FILE_INVALID: 'File is invalid',
+  UPLOAD_IMG_SUCCESS: 'Upload image successfully',
+  UPLOAD_VIDEO_SUCCESS: 'Upload video successfully',
+  FIELD_INVALID: 'Field is invalid'
 } as const

@@ -1,3 +1,4 @@
+import { MediaUploadImgReqBody } from './models/requests/Media.request'
 import { TokenPayLoad } from './models/requests/User.request'
 import User from './models/schemas/User.schema'
 

@@ -381,6 +381,15 @@ export const checkValidateUpdateMe = validate(
         trim: true,
         isString: {
           errorMessage: USER_MESSAGE.ERROR_USERNAME_IS_STRING
+        },
+        custom: {
+          options: async (value: string) => {
+            const isExist = await userService.checkExistUsername(value)
+            if (isExist) {
+              throw new Error(`User ${value} already exists`)
+            }
+            return true
+          }
         }
       },
       avatar: {
@@ -423,4 +432,67 @@ export const checkValidateFollow = validate(
     },
     ['body']
   )
+)
+
+export const checkValidateUnfollow = validate(
+  checkSchema(
+    {
+      follow_user_id: {
+        isEmpty: false,
+        isString: true,
+        custom: {
+          options: (value: string) => {
+            if (!ObjectId.isValid(value)) {
+              throw new ErrorWithStatus(USER_MESSAGE.USER_FOLLOW_USER_ID_INVALID, HTTP_STATUS.BAD_REQUEST)
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const checkValidateChangePassword = validate(
+  checkSchema({
+    oldPassword: {
+      isLength: {
+        options: { min: 8, max: 20 },
+        errorMessage: USER_MESSAGE.ERROR_LENGTH_PASSWORD
+      },
+      custom: {
+        options: async (value: string, { req }) => {
+          const { user_id } = req.decode_access_token
+          const user = await userService.getUserByIdAndPassword(user_id, value)
+          if (user) {
+            throw new ErrorWithStatus(USER_MESSAGE.ERROR_INVALID_USER, HTTP_STATUS.BAD_REQUEST)
+          }
+          return true
+        }
+      }
+    },
+    newPassword: {
+      isLength: {
+        options: { min: 8, max: 20 },
+        errorMessage: USER_MESSAGE.ERROR_LENGTH_PASSWORD
+      }
+    },
+    conformNewPassword: {
+      isLength: {
+        options: { min: 8, max: 20 },
+        errorMessage: USER_MESSAGE.ERROR_LENGTH_PASSWORD
+      },
+      custom: {
+        options: (value: string, { req }) => {
+          if (value !== req.body.newPassword) {
+            throw new Error(USER_MESSAGE.ERROR_PASSWORD_NOT_MATCH)
+          } else {
+            return true
+          }
+        }
+      }
+    }
+  })
 )

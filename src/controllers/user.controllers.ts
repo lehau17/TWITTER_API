@@ -6,9 +6,11 @@ import { HTTP_STATUS } from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { ErrorWithStatus } from '~/models/errors'
 import {
+  ChangePasswordReqBody,
   FollowRequestBody,
   RegisterRequestBody,
   TokenPayLoad,
+  UnfollowParamsRequestBody,
   UpdateMeRequestBody
 } from '~/models/requests/User.request'
 import User from '~/models/schemas/User.schema'
@@ -106,4 +108,27 @@ export const followController = async (req: Request<core.ParamsDictionary, any, 
     mes: 'Follow successfully',
     result
   })
+}
+
+export const unFollowController = async (req: Request, res: Response) => {
+  const { user_id } = req.decode_access_token as TokenPayLoad
+  const { follow_user_id } = req.params
+  const result = await userService.unFollowService(user_id, follow_user_id)
+  res.json(result)
+}
+
+export const oauthController = async (req: Request, res: Response) => {
+  const { code } = req.query
+  const result = await userService.oauthService(code as string)
+  return result
+}
+
+export const changePasswordController = async (
+  req: Request<core.ParamsDictionary, any, ChangePasswordReqBody>,
+  res: Response
+) => {
+  const { newPassword } = req.body
+  const { user_id } = req.decode_access_token as TokenPayLoad
+  const result = await userService.changePasswordService(user_id, newPassword)
+  return result
 }
