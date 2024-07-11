@@ -18,6 +18,13 @@ class BookMarkService {
       }
     )
   }
+
+  removeBookmarkSevice(user_id: string, tweet_id: string) {
+    return databaseService.getBookMarks.findOneAndDelete({
+      user_id: new ObjectId(user_id),
+      tweet_id: new ObjectId(tweet_id)
+    })
+  }
 }
 
 const bookMarkService = new BookMarkService()

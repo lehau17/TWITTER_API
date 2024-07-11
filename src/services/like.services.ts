@@ -18,6 +18,12 @@ class LikeService {
       }
     )
   }
+  unLikekSevice(user_id: string, tweet_id: string) {
+    return databaseService.getLikes.findOneAndDelete({
+      user_id: new ObjectId(user_id),
+      tweet_id: new ObjectId(tweet_id)
+    })
+  }
 }
 
 const likeService = new LikeService()

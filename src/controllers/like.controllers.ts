@@ -12,5 +12,13 @@ export const likedController = async (
   const { user_id } = req.decode_access_token as TokenPayLoad
   const { tweet_id } = req.body
   const result = await likeService.likedService(user_id, tweet_id)
+  return res.json({ meg: 'Liked', result })
+}
+
+export const removeLikeController = async (req: express.Request, res: express.Response) => {
+  const { user_id } = req.decode_access_token as TokenPayLoad
+  const { tweet_id } = req.params
+  const result = await likeService.unLikekSevice(user_id, tweet_id)
+  return res.json({ meg: 'unLike', result })
   return result
 }
