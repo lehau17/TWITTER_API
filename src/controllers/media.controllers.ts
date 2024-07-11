@@ -1,4 +1,7 @@
 import { Request, Response } from 'express'
+import path from 'path'
+import { UPLOAD_IMG_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
+import { HTTP_STATUS } from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/userMessage'
 import { mediaService } from '~/services/media.services'
 import { uploadImg, uploadVideo } from '~/utils/files'
@@ -17,8 +20,26 @@ export const uploadMultiImgController = async (req: Request, res: Response) => {
 
 export const uploadSingleVideoController = async (req: Request, res: Response) => {
   const video = await uploadVideo(req, 1)
-  console.log('Check video', video)
+  const result = mediaService.uploadVideoService(video)
+  console.log('check result', result)
 
-  const result = await mediaService.uploadVideoService(video)
   res.json({ result, meg: USER_MESSAGE.UPLOAD_VIDEO_SUCCESS })
+}
+
+export const serveImgController = (req: Request, res: Response) => {
+  const { name } = req.params
+  res.sendFile(path.resolve(UPLOAD_IMG_DIR, name), (err) => {
+    if (err) {
+      res.status(HTTP_STATUS.NOT_FOUND).send(err.message)
+    }
+  })
+}
+
+export const serveVideoController = (req: Request, res: Response) => {
+  const { name } = req.params
+  res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, name), (err) => {
+    if (err) {
+      res.status(HTTP_STATUS.NOT_FOUND).send(err.message)
+    }
+  })
 }

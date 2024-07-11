@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { TokenPayLoad } from '~/models/requests/User.request'
 
 export const signToken = ({
   payload,
@@ -22,12 +23,12 @@ export const signToken = ({
 }
 
 export const verifyToken = (token: string, privateKey: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<TokenPayLoad>((resolve, reject) => {
     jwt.verify(token, privateKey, function (err, decoded) {
       if (err) {
         throw reject(err)
       }
-      resolve(decoded)
+      resolve(decoded as TokenPayLoad)
     })
   })
 }

@@ -11,6 +11,7 @@ import {
   userForgotPasswordController,
   userLoginController,
   userLogoutController,
+  userRefreshTokenController,
   userRegisterController,
   userResendEmailVerifyController,
   userVerifyForgotPasswordController
@@ -24,6 +25,7 @@ import {
   checkValidateForgotPasswordToken,
   checkValidateLogin,
   checkValidateLogout,
+  checkValidateRefreshToken,
   checkValidateRegister,
   checkValidateResetPassword,
   checkValidateUnfollow,
@@ -36,6 +38,7 @@ import { wrapperRequestHandler } from '~/utils/handleError'
 const userRouter = express.Router()
 userRouter.post('/logout', checkValidateLogout, wrapperRequestHandler(userLogoutController))
 userRouter.post('/login', checkValidateLogin, wrapperRequestHandler(userLoginController))
+userRouter.post('/refresh-token', checkValidateRefreshToken, wrapperRequestHandler(userRefreshTokenController))
 userRouter.post('/register', checkValidateRegister, wrapperRequestHandler(userRegisterController))
 userRouter.post('/verify-email', checkValidaVerifyToken, wrapperRequestHandler(userEmailVerifyController))
 userRouter.post(

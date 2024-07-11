@@ -8,6 +8,7 @@ import { ErrorWithStatus } from '~/models/errors'
 import {
   ChangePasswordReqBody,
   FollowRequestBody,
+  RefreshTokenReqBody,
   RegisterRequestBody,
   TokenPayLoad,
   UnfollowParamsRequestBody,
@@ -21,7 +22,6 @@ import userService from '~/services/user.services'
 export const userLoginController = async (req: Request, res: Response) => {
   const user = req.user as User
   const result = await userService.login({ user_id: (user._id as ObjectId).toString(), verify: user.verify })
-  await refreshTokenService.addRefreshTokenService(result.refreshToken as string)
   res.status(200).json({ ...result, message: USER_MESSAGE.LOGIN_SUCCESS })
 }
 
@@ -131,4 +131,14 @@ export const changePasswordController = async (
   const { user_id } = req.decode_access_token as TokenPayLoad
   const result = await userService.changePasswordService(user_id, newPassword)
   return result
+}
+
+export const userRefreshTokenController = async (
+  req: Request<core.ParamsDictionary, any, RefreshTokenReqBody>,
+  res: Response
+) => {
+  const { decode_refresh_token } = req
+  const { refresh_token } = req.body
+  const { user_id, verify, exp } = decode_refresh_token as TokenPayLoad
+  const result = await userService.refreshTokenService(user_id, verify, refresh_token, exp)
 }

@@ -1,4 +1,4 @@
-import formidable from 'formidable'
+import formidable, { File } from 'formidable'
 import { mkdirp } from 'mkdirp'
 import path from 'path'
 import sharp from 'sharp'
@@ -9,7 +9,6 @@ import { Media } from '~/models/Media/media'
 import { getExtension } from '~/utils/files'
 class MediaService {
   async uploadImgService(files: formidable.File[]) {
-    mkdirp.mkdirpSync(path.resolve('public/upload/img'))
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         const { filepath, newFilename } = file
@@ -30,30 +29,21 @@ class MediaService {
     )
     return result
   }
-  async uploadVideoService(files: formidable.File[]) {
-    mkdirp.mkdirpSync(path.resolve('public/upload/videos'))
+  uploadVideoService(files: formidable.File[]) {
+    const video: File = files[0]
+    const { newFilename, originalFilename } = video
 
-    // const result: Media[] = undefined
-    // await Promise.all(
-    // files.map(async (file) => {
-    //   file.newFilename = newFilename + '.' + getExtension(originalFilename as string)
-    //   let { filepath, newFilename, originalFilename } = file
-    //   console.log(filepath, newFilename)
-    //   newFilename = newFilename + '.' + getExtension(originalFilename as string)
-    //   const pathFile = path.resolve('public/upload/videos', newFilename)
-    //   if (isProduction()) {
-    //     return {
-    //       url: process.env.HOST + 'upload/videos/' + newFilename,
-    //       type: MediaType.Video
-    //     }
-    //   }
-    //   return {
-    //     url: process.env.URL_BACK_END_LOCAL + 'upload/videos/' + newFilename,
-    //     type: MediaType.Video
-    //   }
-    // })
-    // )
-    return null
+    const ext = getExtension(originalFilename as string)
+    if (isProduction()) {
+      return {
+        url: process.env.HOST + 'upload/videos/' + newFilename + '.' + ext,
+        type: MediaType.Video
+      }
+    }
+    return {
+      url: process.env.URL_BACK_END_LOCAL + 'upload/videos/' + newFilename + '.' + ext,
+      type: MediaType.Video
+    }
   }
 }
 

@@ -496,3 +496,34 @@ export const checkValidateChangePassword = validate(
     }
   })
 )
+
+export const checkValidateRefreshToken = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        custom: {
+          options: async (value: string, { req }) => {
+            if (value === '') {
+              throw new ErrorWithStatus(USER_MESSAGE.ERROR_EMPTY_TOKEN, HTTP_STATUS.UNAUTHORiZED)
+            }
+            try {
+              const [decodeRefreshToken, refreshToken] = await Promise.all([
+                await verifyToken(value, process.env.PRIVATE_KEY as string),
+                await refreshTokenService.findRefreshToken(value)
+              ])
+              if (refreshToken !== null) {
+                req.decode_refresh_token = decodeRefreshToken
+              } else {
+                throw new ErrorWithStatus(USER_MESSAGE.ERROR_INVALID_REFRESH_TOKEN, HTTP_STATUS.UNAUTHORiZED)
+              }
+            } catch (error) {
+              throw new ErrorWithStatus(USER_MESSAGE.ERROR_INVALID_REFRESH_TOKEN, HTTP_STATUS.UNAUTHORiZED)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

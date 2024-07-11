@@ -40,3 +40,7 @@ export interface ChangePasswordReqBody {
 export interface UnfollowParamsRequestBody extends ParamsDictionary {
   follow_user_id: string
 }
+
+export interface RefreshTokenReqBody {
+  refresh_token: string
+}
