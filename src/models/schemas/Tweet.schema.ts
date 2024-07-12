@@ -21,12 +21,12 @@ export class Tweet {
   type: TypeTweet
   audience: TweetAudience
   content: string | null
-  parent_id?: ObjectId | null
+  parent_id: ObjectId | null
   hashtags: ObjectId[]
   mentions: ObjectId[]
   medias: Media[]
-  guest_views?: number
-  user_views?: number
+  guest_views: number
+  user_views: number
   create_at?: Date
   update_at?: Date
 
@@ -49,7 +49,7 @@ export class Tweet {
     this.guest_views = guest_views || 0
     this.hashtags = hashtags
     this.mentions = mentions.map((mention) => new ObjectId(mention))
-    this.parent_id = parent_id
+    this.parent_id = parent_id || null
     this.user_id = user_id
     this.medias = medias
     this.user_views = user_views || 0

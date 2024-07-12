@@ -1,7 +1,11 @@
 import { Router } from 'express'
 import { createBookmarkController, removeBookmarkController } from '~/controllers/bookmark.controllers'
-import { checkValidateCreateBookmark } from '~/middlewares/bookmark.middlewares'
-import { checkValidateAccessToken, checkValidaVerifyToken } from '~/middlewares/User.middleware'
+import { checkValidateTweetId } from '~/middlewares/bookmark.middlewares'
+import {
+  checkValidateAccessToken,
+  checkValidateVerifiedUser,
+  checkValidaVerifyToken
+} from '~/middlewares/User.middleware'
 import { wrapperRequestHandler } from '~/utils/handleError'
 
 const bookMarkRouter = Router()
@@ -9,8 +13,8 @@ const bookMarkRouter = Router()
 bookMarkRouter.post(
   '/create',
   checkValidateAccessToken,
-  checkValidaVerifyToken,
-  checkValidateCreateBookmark,
+  checkValidateVerifiedUser,
+  checkValidateTweetId,
   wrapperRequestHandler(createBookmarkController)
 )
 

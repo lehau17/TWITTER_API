@@ -1,6 +1,12 @@
 import { Router } from 'express'
-import { createTweetController } from '~/controllers/tweet.controllers'
-import { checkValidateCreateTweet } from '~/middlewares/Tweet.middlewares'
+import { createTweetController, getChildrenTweet, getNewFeeds, getTweetById } from '~/controllers/tweet.controllers'
+import { checkValidateIsLogin, checkValidateTweetId } from '~/middlewares/bookmark.middlewares'
+import {
+  checkValidateAudience,
+  checkValidateCreateTweet,
+  checkValidatePagination,
+  checkValidateTypeTweet
+} from '~/middlewares/Tweet.middlewares'
 import { checkValidateAccessToken, checkValidateVerifiedUser } from '~/middlewares/User.middleware'
 import { wrapperRequestHandler } from '~/utils/handleError'
 
@@ -11,5 +17,33 @@ tweetRouter.post(
   checkValidateVerifiedUser,
   checkValidateCreateTweet,
   wrapperRequestHandler(createTweetController)
+)
+
+tweetRouter.get(
+  '/:tweet_id',
+  checkValidateIsLogin(checkValidateAccessToken),
+  checkValidateIsLogin(checkValidateVerifiedUser),
+  checkValidateTweetId,
+  wrapperRequestHandler(checkValidateAudience),
+  wrapperRequestHandler(getTweetById)
+)
+
+tweetRouter.get(
+  '/:tweet_id/children',
+  checkValidateIsLogin(checkValidateAccessToken),
+  checkValidateIsLogin(checkValidateVerifiedUser),
+  checkValidateTweetId,
+  checkValidatePagination,
+  checkValidateTypeTweet,
+  wrapperRequestHandler(checkValidateAudience),
+  wrapperRequestHandler(getChildrenTweet)
+)
+
+tweetRouter.get(
+  '/',
+  checkValidateAccessToken,
+  checkValidateVerifiedUser,
+  checkValidatePagination,
+  wrapperRequestHandler(getNewFeeds)
 )
 export default tweetRouter

@@ -1,6 +1,8 @@
 import { Router } from 'express'
+import { NextFunction, Request, Response } from 'express'
+
 import { likedController, removeLikeController } from '~/controllers/like.controllers'
-import { checkValidateCreateBookmark } from '~/middlewares/bookmark.middlewares'
+import { checkValidateTweetId } from '~/middlewares/bookmark.middlewares'
 import { checkValidateAccessToken, checkValidateVerifiedUser } from '~/middlewares/User.middleware'
 import { wrapperRequestHandler } from '~/utils/handleError'
 
@@ -10,7 +12,7 @@ likeRouter.post(
   '/liked',
   checkValidateAccessToken,
   checkValidateVerifiedUser,
-  checkValidateCreateBookmark,
+  checkValidateTweetId,
   wrapperRequestHandler(likedController)
 )
 

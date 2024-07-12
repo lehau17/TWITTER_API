@@ -21,8 +21,6 @@ export const uploadMultiImgController = async (req: Request, res: Response) => {
 export const uploadSingleVideoController = async (req: Request, res: Response) => {
   const video = await uploadVideo(req, 1)
   const result = mediaService.uploadVideoService(video)
-  console.log('check result', result)
-
   res.json({ result, meg: USER_MESSAGE.UPLOAD_VIDEO_SUCCESS })
 }
 

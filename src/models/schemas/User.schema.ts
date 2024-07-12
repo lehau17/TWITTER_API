@@ -18,6 +18,7 @@ interface UserType {
   username?: string
   avatar?: string
   cover_photo?: string
+  tweet_cricle?: ObjectId[]
 }
 
 export default class User {
@@ -31,6 +32,7 @@ export default class User {
   email_verify_token: string
   forgot_password_token: string
   verify: UserVerifyStatus
+  tweet_cricle: ObjectId[]
   bio: string
   location: string
   website: string
@@ -56,5 +58,6 @@ export default class User {
     this.username = User.username || ''
     this.avatar = User.avatar || ''
     this.cover_photo = User.cover_photo || ''
+    this.tweet_cricle = User.tweet_cricle || []
   }
 }

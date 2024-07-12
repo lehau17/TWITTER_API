@@ -30,5 +30,8 @@ export const USER_MESSAGE = {
   FILE_INVALID: 'File is invalid',
   UPLOAD_IMG_SUCCESS: 'Upload image successfully',
   UPLOAD_VIDEO_SUCCESS: 'Upload video successfully',
-  FIELD_INVALID: 'Field is invalid'
+  FIELD_INVALID: 'Field is invalid',
+  FORMIDABLE_ACCESS_TWEET: 'Access is not allowed',
+  PAGE_NOT_LETTER_THANP_ZERO: 'Page not letter than 0',
+  LIMIT_BETWEEN_ZERO_AND_TWO_HUNDREND: 'Limit exceeded 0 and 200'
 } as const

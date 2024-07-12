@@ -30,7 +30,6 @@ export const uploadImg = (req: Request, quanlity: number) => {
       if (err) {
         return reject(err)
       }
-      console.log(files.img)
 
       if (!files.img) {
         return reject(new ErrorWithStatus(USER_MESSAGE.FIELD_INVALID, HTTP_STATUS.BAD_REQUEST))

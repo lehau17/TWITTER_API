@@ -6,7 +6,8 @@ const TWEET_MESSAGE = {
   PARENT_ID_IS_NOT_OBJECTID: 'Parent is not an objectID',
   TWEET_TYPE_AND_PARENT_ID_INVALID: 'tweet type and parent_id is invalid',
   CONTENT_IS_ID_INVALID: 'content is invalid',
-  HASHTAG_IS_NOT_ARRAY_STRING: 'hashtag is not a string array'
+  HASHTAG_IS_NOT_ARRAY_STRING: 'hashtag is not a string array',
+  AUDIENCE_NOT_PUBLIC: 'The user is not allowed to access this'
 } as const
 
 export default TWEET_MESSAGE

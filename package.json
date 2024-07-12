@@ -45,6 +45,7 @@
     "minimist": "^1.2.8",
     "mkdirp": "^3.0.1",
     "mongodb": "^6.7.0",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "@faker-js/faker": "^8.4.1"
   }
 }
